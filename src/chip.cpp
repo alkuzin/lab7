@@ -112,6 +112,9 @@ void Chip::_display_pin(size_t i, size_t j)
     std::printf("%*s |%s\u2588%s| %lu", WIDTH_ALIGNMENT, pins[i].c_str(), _get_state(i), COLOR_RESET, (i + 1));
     std::printf("%*lu |%s\u2588%s| ", WIDTH_ALIGNMENT, (j + 1), _get_state(j), COLOR_RESET);
     std::printf("%-*s\n", WIDTH_ALIGNMENT, pins[j].c_str());
+    
+    if (i != (PINS_SIZE >> 1) - 2)
+        std::printf("%*s\n", WIDTH_ALIGNMENT, "\t      _|               |_");
 }
 
 void Chip::_display_pins(void)
@@ -119,10 +122,8 @@ void Chip::_display_pins(void)
     std::printf("%*s\n", WIDTH_ALIGNMENT, "\n\n\t\t___PIC16F8X____");
     std::printf("%*s\n", WIDTH_ALIGNMENT, "\t      _|               |_");
 
-    for (size_t i = 0; i < (PINS_SIZE >> 1) - 1; i++) {
+    for (size_t i = 0; i < (PINS_SIZE >> 1) - 1; i++)
         _display_pin(i, (PINS_SIZE - (i + 1)));
-        std::printf("%*s\n", WIDTH_ALIGNMENT, "\t      _|               |_");
-    }
     
     std::printf("%*s\n\n\n", WIDTH_ALIGNMENT, "\t       |_______________|");
 }
