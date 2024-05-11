@@ -20,22 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE. */
 
+#include <filesystem>
+#include <iostream>
 #include <csignal>
 
 #include <lab7/chip.hpp>
 #include <lab7/utils.hpp>
 
-
 volatile int is_sigint_received;
+
 
 int main(void)
 {
-    is_sigint_received = 0;
-    signal(SIGINT, sigint_handler);
+    try {
+        std::string filename;
 
-    Chip chip("/dev/ttyUSB0");
+        is_sigint_received = 0;
+        signal(SIGINT, sigint_handler);
+        signal(SIGSEGV, sigsegv_handler);
 
-    chip.thread_process();
+        filename = "/dev/ttyUSB0";
+
+        if (!std::filesystem::exists(filename)) {
+            std::cerr << "lab7: incorrect filename: \"" << filename << "\"!\n";
+            exit(EXIT_FAILURE);
+        }
+
+        Chip chip(filename);
+
+        chip.thread_process();
+    }
+    catch(const std::exception& e) {
+        std::cerr << "lab7: " << e.what() << std::endl;
+    }
 
     return 0;
 }
