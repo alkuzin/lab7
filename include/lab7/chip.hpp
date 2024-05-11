@@ -33,23 +33,34 @@
 
 class Chip
 {
-    // boost::asio::io_service  io;
-    // boost::asio::serial_port serial;
-    std::thread thread;
-    std::vector<bool> state;
-    std::vector<std::string> pins;
+    boost::asio::serial_port serial;
+    boost::asio::io_service  io;
+
+    std::vector<std::string> pins;   // pins names
+    std::vector<bool>        state;  // state of all pins (active/idle)
+    std::thread              thread; // main thread
 
     public:
         Chip(const std::string& filename);
         ~Chip(void);
 
+        // serial port input handler
         void thread_process(void);
 
     private:
+        // read single character from serial port
         char _read_char(void);
+
+        // check pin name is valid
         int  _is_valid(const std::string &pin);
-        void _display_pins(void);
+        
+        // get state of the pin (active/idle)
         const char *_get_state(int pos);
+
+        // display colored chip's pins
+        void _display_pins(void);
+
+        // display single line of chip's pins
         void _display_pin(size_t i, size_t j);
 };
 

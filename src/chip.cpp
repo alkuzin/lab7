@@ -23,16 +23,21 @@
 #include <iostream>
 #include <iomanip>
 
-#include <lab7/chip.hpp>
 #include <lab7/utils.hpp>
+#include <lab7/chip.hpp>
 
 
-Chip::Chip([[gnu::unused]]const std::string& filename)
+Chip::Chip(const std::string& filename) : serial(io, filename) 
 {
-    // serial.open(filename);
+    serial.open(filename);
+
+    if (!serial.is_open()) {
+        std::cerr << "Invalid filename provided." << std::endl;
+    }
+
     std::cout << "lab7: opened serial port" << std::endl;
 
-    // thread = std::thread(&Chip::thread_process, this);
+    thread = std::thread(&Chip::thread_process, this);
 
     pins = {
         "RA2", "RA3", "RA4/T0CKI", "MCLR", "VSS", "RB0/INT",
@@ -43,20 +48,12 @@ Chip::Chip([[gnu::unused]]const std::string& filename)
     state.assign(18, false);
 }
 
-// Chip::Chip(const std::string& filename) : serial(io, filename)
-// {
-//     // serial.open(filename);
-//     std::cout << "lab7: opened serial port" << std::endl;
-
-//     thread = std::thread(&Chip::thread_process, this);
-// }
-
 Chip::~Chip()
 {
-    // if (serial.is_open())
-    //     serial.close();
+    if (serial.is_open())
+        serial.close();
 
-    // thread.detach();
+    thread.detach();
     
     std::cout << "lab7: closed serial port" << std::endl;
 }
@@ -67,28 +64,28 @@ const char *Chip::_get_state(int pos)
     return s = (state[pos] ? COLOR_GREEN : COLOR_RED);
 }
 
-// char Chip::_read_char(void)
-// {
-//     char c;
+char Chip::_read_char(void)
+{
+    char c;
     
-//     boost::asio::read(serial, boost::asio::buffer(&c, 1));
+    boost::asio::read(serial, boost::asio::buffer(&c, 1));
 
-//     std::cout << "lab7: read character: " << c << std::endl;
+    std::cout << "lab7: read character: " << c << std::endl;
 
-//     return c;
-// }
+    return c;
+}
 
 void Chip::thread_process(void)
 {
     std::string recv_str;
     int  pos;
-    // char c;
+    char c;
 
     recv_str = "RA4/T0CKI";
     while (!is_sigint_received) {
-        // recv_str = "";
-        // while ((c = _read_char()) != '\r')
-        //     recv_str += c;
+        recv_str = "";
+        while ((c = _read_char()) != '\r')
+            recv_str += c;
 
         std::cout << "lab7: recv_str: \"" << recv_str << "\"\n";
         
