@@ -33,6 +33,10 @@
 
 extern volatile int is_sigint_received;
 
+// user interrupt signal handler
 void sigint_handler(int signal);
+
+// segmentation fault handler
+void sigsegv_handler(int signal);
 
 #endif // _LAB_7_UTILS_HPP_

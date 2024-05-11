@@ -27,5 +27,11 @@
 void sigint_handler(int signal)
 {
     is_sigint_received = 1;
-    std::cout << "\nSIGINT("<< signal << ")\n";
+    std::cout << "\nlab7: SIGINT("<< signal << ")\n";
+}
+
+void sigsegv_handler(int signal)
+{
+    std::cerr << "\nlab7: SIGSEGV("<< signal << ")\n";
+    exit(signal);
 }
