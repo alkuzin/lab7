@@ -1,5 +1,5 @@
 CC     = g++
-CFLAGS = -Wall -Wextra -Werror -g -I include
+CFLAGS = -Wall -Wextra -Werror -g -Os -I include -lboost_system -lboost_thread
 
 NAME = lab7
 SRC  = chip utils
