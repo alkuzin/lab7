@@ -20,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE. */
 
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
 
@@ -33,6 +34,7 @@ Chip::Chip(const std::string& filename) : serial(io, filename)
 
     if (!serial.is_open()) {
         std::cerr << "Invalid filename provided." << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     std::cout << "lab7: opened serial port" << std::endl;
@@ -81,7 +83,6 @@ void Chip::thread_process(void)
     int  pos;
     char c;
 
-    recv_str = "RA4/T0CKI";
     while (!is_sigint_received) {
         recv_str = "";
         while ((c = _read_char()) != '\r')
@@ -98,9 +99,9 @@ void Chip::thread_process(void)
             else {
                 state[pos] = true;
                 _display_pins();
+                state[pos] = false;
             }
         }
-        exit(0);
     }
 }
 
